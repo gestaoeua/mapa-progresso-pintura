@@ -16,6 +16,9 @@ const SUMMARY_TILES: Array<{ key: 'all' | Status; label: string }> = [
   { key: 'nao_cadastrada', label: 'Não cadastradas' },
 ];
 
+const GRID_COLUMNS = 'ABCDEFGHIJKLMNOPQRST'.split('');
+const GRID_ROWS = Array.from({ length: 20 }, (_, index) => index + 1);
+
 function formatTime(date: Date): string {
   return date.toLocaleString('pt-BR', {
     day: '2-digit',
@@ -107,8 +110,10 @@ export default function App() {
 
   const copyPosition = async () => {
     if (!draftPosition) return;
+    const gridColumn = GRID_COLUMNS[Math.min(19, Math.floor(draftPosition.x / 5))];
+    const gridRow = Math.min(20, Math.floor(draftPosition.y / 5) + 1);
     await navigator.clipboard.writeText(
-      `PosicaoX: ${draftPosition.x} | PosicaoY: ${draftPosition.y}`
+      `Referência: ${gridColumn}-${gridRow} | PosicaoX: ${draftPosition.x} | PosicaoY: ${draftPosition.y}`
     );
   };
 
@@ -245,7 +250,20 @@ export default function App() {
                   src={`${import.meta.env.BASE_URL}floor-plan.png`}
                   alt="Planta baixa do projeto com salas identificadas"
                 />
-                {positioningMode && <div className="position-grid" aria-hidden="true" />}
+                {positioningMode && (
+                  <div className="position-grid" aria-hidden="true">
+                    <div className="grid-columns">
+                      {GRID_COLUMNS.map((letter, index) => (
+                        <span key={letter} style={{ left: `${(index + 0.5) * 5}%` }}>{letter}</span>
+                      ))}
+                    </div>
+                    <div className="grid-rows">
+                      {GRID_ROWS.map((number, index) => (
+                        <span key={number} style={{ top: `${(index + 0.5) * 5}%` }}>{number}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 {visible.map((r) => (
                   <button
                     key={r.mark}
@@ -272,9 +290,13 @@ export default function App() {
                 {positioningMode && (
                   <div className="position-help">
                     <strong>Clique no centro da sala</strong>
-                    <span>A grade divide a planta de 10 em 10.</span>
+                    <span>Colunas A–T · Linhas 1–20</span>
                     {draftPosition && (
                       <div>
+                        <b>
+                          {GRID_COLUMNS[Math.min(19, Math.floor(draftPosition.x / 5))]}-
+                          {Math.min(20, Math.floor(draftPosition.y / 5) + 1)}
+                        </b>
                         <b>X = {draftPosition.x}</b>
                         <b>Y = {draftPosition.y}</b>
                         <button type="button" onClick={(event) => { event.stopPropagation(); copyPosition(); }}>
