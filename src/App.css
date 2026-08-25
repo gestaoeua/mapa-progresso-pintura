@@ -234,6 +234,20 @@ body {
   font-size: 15px;
   padding: 3px 9px;
 }
+.position-toggle {
+  border: 1px solid #476b92;
+  background: #eef4fa;
+  color: #244a72;
+  border-radius: 6px;
+  padding: 7px 11px;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.position-toggle.on {
+  background: #244a72;
+  color: #fff;
+}
 .map-viewport {
   height: 628px;
   overflow: auto;
@@ -252,6 +266,84 @@ body {
   width: 100%;
   display: block;
   filter: contrast(1.02) saturate(0.55);
+}
+.map-stage.positioning {
+  cursor: crosshair;
+}
+.position-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(to right, #174a7d55 0 1px, transparent 1px 10%),
+    repeating-linear-gradient(to bottom, #174a7d55 0 1px, transparent 1px 10%);
+  box-shadow: inset 0 0 0 2px #174a7d99;
+}
+.draft-marker {
+  position: absolute;
+  z-index: 8;
+  transform: translate(-50%, -50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  background: #1769aa;
+  box-shadow: 0 0 0 4px #1769aa88, 0 3px 12px #0005;
+  pointer-events: none;
+}
+.draft-marker b {
+  position: absolute;
+  left: 28px;
+  top: 2px;
+  color: #fff;
+  background: #123b61;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 9px;
+  white-space: nowrap;
+}
+.position-help {
+  position: absolute;
+  z-index: 9;
+  top: 12px;
+  left: 12px;
+  background: #fff;
+  color: var(--navy);
+  padding: 11px 13px;
+  border: 1px solid #9eb9d2;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px #10243b33;
+  font-size: 10px;
+}
+.position-help > strong,
+.position-help > span {
+  display: block;
+}
+.position-help > span {
+  color: var(--muted);
+  margin-top: 3px;
+}
+.position-help div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 9px;
+}
+.position-help div b {
+  background: #e9f1f8;
+  padding: 5px 7px;
+  border-radius: 5px;
+}
+.position-help button {
+  border: 0;
+  border-radius: 5px;
+  background: #1769aa;
+  color: #fff;
+  padding: 6px 8px;
+  font-size: 9px;
+  font-weight: 800;
+  cursor: pointer;
 }
 .marker {
   position: absolute;

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { MouseEvent } from 'react';
 import { ApiConfigError, loadRooms } from './api';
 import type { Room, Status } from './types';
 import { STATUS_CLASS, STATUS_LABEL, STATUS_ORDER } from './types';
@@ -37,6 +38,8 @@ export default function App() {
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(1);
   const [selectedMark, setSelectedMark] = useState<string | null>(null);
+  const [positioningMode, setPositioningMode] = useState(false);
+  const [draftPosition, setDraftPosition] = useState<{ x: number; y: number } | null>(null);
 
   const fetchData = useCallback(async () => {
     setState('loading');
@@ -93,6 +96,21 @@ export default function App() {
 
   const countAll = rooms.length;
   const countBy = (s: Status) => rooms.filter((r) => r.status === s).length;
+
+  const choosePosition = (event: MouseEvent<HTMLDivElement>) => {
+    if (!positioningMode) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = Math.min(100, Math.max(0, ((event.clientX - rect.left) / rect.width) * 100));
+    const y = Math.min(100, Math.max(0, ((event.clientY - rect.top) / rect.height) * 100));
+    setDraftPosition({ x: Math.round(x), y: Math.round(y) });
+  };
+
+  const copyPosition = async () => {
+    if (!draftPosition) return;
+    await navigator.clipboard.writeText(
+      `PosicaoX: ${draftPosition.x} | PosicaoY: ${draftPosition.y}`
+    );
+  };
 
   return (
     <main className="shell">
@@ -183,6 +201,16 @@ export default function App() {
                 +
               </button>
             </div>
+            <button
+              type="button"
+              className={`position-toggle ${positioningMode ? 'on' : ''}`}
+              onClick={() => {
+                setPositioningMode((current) => !current);
+                setDraftPosition(null);
+              }}
+            >
+              {positioningMode ? 'Fechar grade' : '⌗ Definir posição'}
+            </button>
           </div>
 
           <div className="map-viewport">
@@ -208,23 +236,54 @@ export default function App() {
             )}
 
             {state === 'ready' && (
-              <div className="map-stage" style={{ transform: `scale(${zoom})` }}>
+              <div
+                className={`map-stage ${positioningMode ? 'positioning' : ''}`}
+                style={{ transform: `scale(${zoom})` }}
+                onClick={choosePosition}
+              >
                 <img
                   src={`${import.meta.env.BASE_URL}floor-plan.png`}
                   alt="Planta baixa do projeto com salas identificadas"
                 />
+                {positioningMode && <div className="position-grid" aria-hidden="true" />}
                 {visible.map((r) => (
                   <button
                     key={r.mark}
                     type="button"
                     className={`marker ${STATUS_CLASS[r.status]} ${selected?.mark === r.mark ? 'selected' : ''}`}
                     style={{ left: `${r.x}%`, top: `${r.y}%` }}
-                    onClick={() => setSelectedMark(r.mark)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setSelectedMark(r.mark);
+                    }}
                     aria-label={`${r.mark} ${r.name}`}
                   >
                     <span>{r.mark}</span>
                   </button>
                 ))}
+                {draftPosition && (
+                  <div
+                    className="draft-marker"
+                    style={{ left: `${draftPosition.x}%`, top: `${draftPosition.y}%` }}
+                  >
+                    <b>{selected?.mark || 'NOVA'}</b>
+                  </div>
+                )}
+                {positioningMode && (
+                  <div className="position-help">
+                    <strong>Clique no centro da sala</strong>
+                    <span>A grade divide a planta de 10 em 10.</span>
+                    {draftPosition && (
+                      <div>
+                        <b>X = {draftPosition.x}</b>
+                        <b>Y = {draftPosition.y}</b>
+                        <button type="button" onClick={(event) => { event.stopPropagation(); copyPosition(); }}>
+                          Copiar X e Y
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
                 {!visible.length && <div className="empty">Nenhuma sala corresponde ao filtro.</div>}
               </div>
             )}
