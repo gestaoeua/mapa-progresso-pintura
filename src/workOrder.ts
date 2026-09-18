@@ -1,0 +1,19 @@
+export type Photo = { file: string; stage: 'Before' | 'Progress' | 'After'; caption: string };
+export type WorkItem = { id: string; title: string; kind: 'trim' | 'door'; location: string; coats: number; note?: string; area?: { x: number; y: number; label: string }; photos: Photo[] };
+const photo = (file: string, stage: Photo['stage'], caption: string): Photo => ({ file, stage, caption });
+const corridorPhotos = [photo('trims-01-02-progress-1.jpeg', 'Progress', 'Corredor 1-001 — registro conjunto dos trims #1 e #2; 1ª demão na ocasião da foto.'), photo('trims-01-02-progress-2.jpeg', 'Progress', 'Corredor 1-001 — registro conjunto; associação individual entre foto e trim não confirmada.')];
+export const workItems: WorkItem[] = [
+  { id: 'T01', title: 'Trim #1', kind: 'trim', location: 'Corredor 1-001', coats: 2, area: { x: 54.2, y: 68, label: 'Área do corredor 1-001 • T01 / T02' }, photos: corridorPhotos },
+  { id: 'T02', title: 'Trim #2', kind: 'trim', location: 'Corredor 1-001', coats: 2, area: { x: 54.2, y: 68, label: 'Área do corredor 1-001 • T01 / T02' }, photos: corridorPhotos },
+  { id: 'T03', title: 'Trim #3', kind: 'trim', location: 'Localização a confirmar', coats: 2, photos: [] },
+  { id: 'T04', title: 'Trim #4', kind: 'trim', location: 'Corredor 1-006', coats: 2, area: { x: 25.2, y: 68, label: 'Área do corredor 1-006' }, photos: [] },
+  { id: 'T05', title: 'Trim #5', kind: 'trim', location: 'POC Testing B1 — 1-013', coats: 2, area: { x: 31.9, y: 59.5, label: 'Sala 1-013' }, photos: [] },
+  { id: 'T06', title: 'Trim #6', kind: 'trim', location: 'MEDS — 1-015', coats: 2, area: { x: 12.8, y: 60.5, label: 'Sala 1-015' }, photos: [] },
+  { id: 'T07', title: 'Trim #7', kind: 'trim', location: 'Corredor entre 1-020 / 1-021', coats: 2, area: { x: 25.3, y: 32.5, label: 'Região entre 1-020 / 1-021' }, photos: [photo('trim-07-progress-1.jpeg', 'Progress', 'Trim #7 — registro durante a execução.'), photo('trim-07-progress-2.jpeg', 'Progress', 'Trim #7 — segundo registro durante a execução.')] },
+  { id: 'T08', title: 'Trim #8', kind: 'trim', location: 'HR Service Office — 1-022', coats: 2, area: { x: 11.8, y: 18, label: 'Sala 1-022' }, photos: [] },
+  { id: 'T09', title: 'Trim #9', kind: 'trim', location: 'Corredor 1-040 — conforme conversa', coats: 2, note: 'Conferir posição: a planta disponível identifica 1-040 como Lactation. Nenhum ponto foi atribuído ao trim. Execução de 2 demãos confirmada no resumo final.', photos: [] },
+  { id: 'T10', title: 'Trim #10', kind: 'trim', location: 'Localização a confirmar', coats: 2, note: 'O levantamento inicial cita 057, mas os registros finais deixam o vínculo em aberto. Não marcado na planta.', photos: [photo('trim-10-progress-1.jpeg', 'Progress', 'Trim #10 — registro durante a execução.'), photo('trim-10-progress-2.jpeg', 'Progress', 'Trim #10 — segundo registro durante a execução.')] },
+  { id: 'P01', title: 'Porta #1 — acesso à escada', kind: 'door', location: 'Acesso à escada • número a confirmar', coats: 2, note: 'Fotos associadas à porta nova da escada na conversa. Vínculo com ST2B e posição exata ainda não confirmados.', photos: [photo('porta-escada-before.jpeg', 'Before', 'Porta nova — foto recebida antes da confirmação de conclusão.'), photo('porta-escada-after.jpeg', 'After', 'Foto enviada com a confirmação: “Foram duas mãos”.')] },
+  { id: 'P02', title: 'Porta #2', kind: 'door', location: 'Localização a confirmar', coats: 2, note: 'Segunda porta incluída no total executado informado. Sem vínculo individual confirmado com foto ou sala.', photos: [] },
+  { id: 'P03', title: 'Porta #3 — externa', kind: 'door', location: 'Entrada externa • posição a confirmar', coats: 1, note: '1ª demão concluída. Falta aplicar a 2ª demão.', photos: [photo('porta-externa-progress.jpeg', 'Progress', 'Porta externa — 1 demão concluída; segunda demão pendente.')] },
+];
